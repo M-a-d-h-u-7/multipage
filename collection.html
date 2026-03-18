@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Collection — AURUM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold:#c9a84c; --gold-light:#e8d08a;
+      --black:#0a0a0a; --dark:#111111; --mid:#1e1e1e;
+      --gray:#666; --light-gray:#aaa; --white:#f5f0e8;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--black); color:var(--white); font-family:'Montserrat',sans-serif; font-weight:300; }
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1.5rem 4rem;
+      background:rgba(10,10,10,0.98); border-bottom:1px solid rgba(201,168,76,0.2);
+    }
+    .nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:600; letter-spacing:0.3em; color:var(--gold); text-decoration:none; }
+    .nav-links { display:flex; gap:2.5rem; list-style:none; }
+    .nav-links a { color:var(--white); text-decoration:none; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; transition:color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color:var(--gold); }
+    .nav-actions { display:flex; gap:1.5rem; align-items:center; }
+    .nav-icon { color:var(--white); text-decoration:none; font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; transition:color 0.3s; cursor:pointer; }
+    .nav-icon:hover { color:var(--gold); }
+    .cart-badge { background:var(--gold); color:var(--black); font-size:0.6rem; font-weight:600; border-radius:50%; width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; margin-left:4px; }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 10rem 8% 4rem;
+      background: linear-gradient(to bottom, #111, var(--black));
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+    }
+    .breadcrumb { font-size:0.65rem; letter-spacing:0.2em; color:var(--gray); margin-bottom:1rem; }
+    .breadcrumb a { color:var(--gray); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--gold); }
+    .page-header h1 { font-family:'Cormorant Garamond',serif; font-size:3.5rem; font-weight:300; }
+    .page-header p { font-size:0.8rem; color:var(--light-gray); margin-top:0.5rem; }
+
+    /* LAYOUT */
+    .shop-layout {
+      display:grid; grid-template-columns:260px 1fr;
+      gap:0; min-height:80vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      background:var(--dark);
+      padding:2.5rem 2rem;
+      border-right:1px solid rgba(201,168,76,0.1);
+      position:sticky; top:80px; align-self:start;
+      height:calc(100vh - 80px); overflow-y:auto;
+    }
+    .sidebar-section { margin-bottom:2.5rem; }
+    .sidebar-title {
+      font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase;
+      color:var(--gold); margin-bottom:1.2rem;
+      padding-bottom:0.5rem; border-bottom:1px solid rgba(201,168,76,0.1);
+    }
+    .filter-option {
+      display:flex; align-items:center; gap:0.8rem;
+      margin-bottom:0.8rem; cursor:pointer;
+    }
+    .filter-option input[type=checkbox] { display:none; }
+    .custom-check {
+      width:16px; height:16px;
+      border:1px solid rgba(201,168,76,0.3);
+      display:inline-block; position:relative;
+      transition:all 0.2s; flex-shrink:0;
+    }
+    .filter-option input:checked + .custom-check {
+      background:var(--gold); border-color:var(--gold);
+    }
+    .filter-option input:checked + .custom-check::after {
+      content:'✓'; position:absolute; top:-2px; left:2px;
+      font-size:11px; color:var(--black); font-weight:700;
+    }
+    .filter-option label { font-size:0.75rem; letter-spacing:0.05em; cursor:pointer; }
+    .filter-option .filter-count { margin-left:auto; font-size:0.65rem; color:var(--gray); }
+
+    /* PRICE RANGE */
+    .price-range { width:100%; margin:0.5rem 0; }
+    .price-range input[type=range] {
+      width:100%; accent-color:var(--gold);
+    }
+    .price-labels { display:flex; justify-content:space-between; font-size:0.7rem; color:var(--light-gray); }
+
+    /* SEARCH */
+    .search-box {
+      display:flex; border:1px solid rgba(201,168,76,0.2);
+      margin-bottom:2rem;
+    }
+    .search-input {
+      flex:1; background:transparent; border:none;
+      padding:0.8rem 1rem; color:var(--white);
+      font-size:0.75rem; font-family:'Montserrat',sans-serif; outline:none;
+    }
+    .search-input::placeholder { color:var(--gray); }
+    .search-btn {
+      background:var(--gold); border:none; padding:0 1rem;
+      color:var(--black); cursor:pointer; font-size:0.9rem;
+    }
+
+    /* MAIN SHOP AREA */
+    .shop-main { padding:2.5rem 3rem; }
+    .shop-toolbar {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:2rem; padding-bottom:1.5rem;
+      border-bottom:1px solid rgba(201,168,76,0.1);
+    }
+    .results-count { font-size:0.75rem; color:var(--light-gray); }
+    .sort-select {
+      background:var(--dark); border:1px solid rgba(201,168,76,0.2);
+      color:var(--white); padding:0.6rem 1rem;
+      font-size:0.7rem; font-family:'Montserrat',sans-serif;
+      outline:none; cursor:pointer;
+    }
+    .view-toggle { display:flex; gap:0.5rem; }
+    .view-btn {
+      width:36px; height:36px;
+      border:1px solid rgba(201,168,76,0.2);
+      background:transparent; color:var(--gray);
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      font-size:0.8rem; transition:all 0.2s;
+    }
+    .view-btn.active { background:var(--gold); border-color:var(--gold); color:var(--black); }
+
+    /* PRODUCTS */
+    .products-grid {
+      display:grid; grid-template-columns:repeat(3, 1fr); gap:1.5rem;
+    }
+    .products-grid.list-view { grid-template-columns:1fr; }
+    .product-card {
+      background:var(--dark); position:relative;
+      cursor:pointer; transition:transform 0.3s;
+    }
+    .product-card:hover { transform:translateY(-4px); }
+    .product-badge {
+      position:absolute; top:1rem; left:1rem; z-index:2;
+      background:var(--gold); color:var(--black);
+      font-size:0.55rem; letter-spacing:0.2em;
+      text-transform:uppercase; font-weight:600;
+      padding:0.3rem 0.7rem;
+    }
+    .product-badge.new { background:var(--gold); }
+    .product-badge.sale { background:#e05555; color:#fff; }
+    .product-card-img {
+      aspect-ratio:1; background:var(--mid);
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden; position:relative;
+    }
+    .watch-face {
+      width:140px; height:140px;
+      border-radius:50%;
+      border:2px solid rgba(201,168,76,0.35);
+      position:relative;
+      transition:transform 0.5s;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .product-card:hover .watch-face { transform:scale(1.08) rotate(5deg); }
+    .watch-label {
+      font-family:'Cormorant Garamond',serif;
+      font-size:0.5rem; letter-spacing:0.3em; color:var(--gold);
+    }
+    .product-info { padding:1.2rem; }
+    .product-series { font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:0.3rem; }
+    .product-name { font-family:'Cormorant Garamond',serif; font-size:1.15rem; margin-bottom:0.5rem; }
+    .product-footer { display:flex; align-items:center; justify-content:space-between; }
+    .product-price { font-size:0.85rem; }
+    .product-price .original { text-decoration:line-through; color:var(--gray); font-size:0.75rem; margin-right:0.5rem; }
+    .add-btn {
+      width:36px; height:36px;
+      background:transparent; border:1px solid rgba(201,168,76,0.3);
+      color:var(--gold); cursor:pointer; font-size:1.2rem;
+      transition:all 0.2s;
+    }
+    .add-btn:hover { background:var(--gold); color:var(--black); }
+    .wishlist-btn {
+      position:absolute; top:1rem; right:1rem; z-index:2;
+      width:32px; height:32px;
+      background:rgba(10,10,10,0.7); border:1px solid rgba(255,255,255,0.1);
+      color:var(--gray); cursor:pointer; font-size:0.9rem;
+      display:flex; align-items:center; justify-content:center;
+      transition:all 0.2s;
+    }
+    .wishlist-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+    /* PAGINATION */
+    .pagination {
+      display:flex; justify-content:center; gap:0.5rem;
+      margin-top:3rem; padding-top:2rem;
+      border-top:1px solid rgba(201,168,76,0.1);
+    }
+    .page-btn {
+      width:40px; height:40px;
+      border:1px solid rgba(201,168,76,0.2);
+      background:transparent; color:var(--white);
+      cursor:pointer; font-size:0.75rem;
+      font-family:'Montserrat',sans-serif;
+      transition:all 0.2s;
+    }
+    .page-btn:hover, .page-btn.active {
+      background:var(--gold); border-color:var(--gold); color:var(--black);
+    }
+
+    /* ACTIVE FILTERS */
+    .active-filters { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+    .filter-tag {
+      background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3);
+      padding:0.3rem 0.8rem; font-size:0.65rem; letter-spacing:0.1em;
+      display:flex; align-items:center; gap:0.5rem; color:var(--gold);
+    }
+    .filter-tag span { cursor:pointer; opacity:0.7; }
+    .filter-tag span:hover { opacity:1; }
+
+    /* FOOTER */
+    footer { background:var(--dark); padding:2rem 8%; text-align:center; border-top:1px solid rgba(201,168,76,0.1); }
+    footer p { font-size:0.7rem; color:var(--gray); }
+    footer a { color:var(--gold); text-decoration:none; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">AURUM</a>
+    <ul class="nav-links">
+      <li><a href="shop.html" class="active">Collection</a></li>
+      <li><a href="shop.html">Men</a></li>
+      <li><a href="shop.html">Women</a></li>
+      <li><a href="about.html">Heritage</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span class="nav-icon">Search</span>
+      <a href="cart.html" class="nav-icon">Cart <span class="cart-badge" id="cartCount">0</span></a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <p class="breadcrumb"><a href="index.html">Home</a> / Collection</p>
+    <h1>The Collection</h1>
+    <p>85 exceptional timepieces, each a masterwork of Swiss craftsmanship</p>
+  </div>
+
+  <div class="shop-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="search-box">
+        <input type="text" class="search-input" placeholder="Search timepieces...">
+        <button class="search-btn">⌕</button>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="sidebar-title">Series</p>
+        <label class="filter-option">
+          <input type="checkbox" checked>
+          <span class="custom-check"></span>
+          <span>label</span>All Series<span class="filter-count">85</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox">
+          <span class="custom-check"></span>
+          <label>Prestige</label><span class="filter-count">24</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox">
+          <span class="custom-check"></span>
+          <label>Oceanic</label><span class="filter-count">18</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox">
+          <span class="custom-check"></span>
+          <label>Celestial</label><span class="filter-count">12</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox">
+          <span class="custom-check"></span>
+          <label>Rouge</label><span class="filter-count">8</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox">
+          <span class="custom-check"></span>
+          <label>Gold Series</label><span class="filter-count">6</span>
+        </label>
+        <label class="filter-option">
+          <input type="checkbox">
+          <span class="custom-check"></span>
+          <label>Verdant</label><span class="filter-count">17</span>
+        </label>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="sidebar-title">Price Range</p>
+        <input type="range" class="price-range" min="50000" max="1000000" value="1000000" oninput="document.getElementById('priceVal').textContent='₹'+Number(this.value).toLocaleString('en-IN')">
+        <div class="price-labels">
+          <span>₹50,000</span>
+          <span id="priceVal">₹10,00,000</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="sidebar-title">Movement</p>
+        <label class="filter-option"><input type="checkbox"><span class="custom-check"></span><label>Automatic</label><span class="filter-count">52</span></label>
+        <label class="filter-option"><input type="checkbox"><span class="custom-check"></span><label>Manual Wind</label><span class="filter-count">18</span></label>
+        <label class="filter-option"><input type="checkbox"><span class="custom-check"></span><label>Quartz</label><span class="filter-count">10</span></label>
+        <label class="filter-option"><input type="checkbox"><span class="custom-check"></span><label>Tourbillon</label><span class="filter-count">5</span></label>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="sidebar-title">Case Material</p>
+        <label class="filter-option"><input type="checkbox"><span class="custom-check"></span><label>Stainless Steel</label><span class="filter-count">40</span></label>
+        <label class="filter-option"><input type="checkbox"><span class="custom-check"></span><label>Rose Gold</label><span class="filter-count">20</span></label>
+        <label class="filter-option"><input type="checkbox"><span class="custom-check"></span><label>Yellow Gold</label><span class="filter-count">15</span></label>
+        <label class="filter-option"><input type="checkbox"><span class="custom-check"></span><label>Titanium</label><span class="filter-count">10</span></label>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="sidebar-title">Gender</p>
+        <label class="filter-option"><input type="checkbox"><span class="custom-check"></span><label>Men</label><span class="filter-count">55</span></label>
+        <label class="filter-option"><input type="checkbox"><span class="custom-check"></span><label>Women</label><span class="filter-count">20</span></label>
+        <label class="filter-option"><input type="checkbox"><span class="custom-check"></span><label>Unisex</label><span class="filter-count">10</span></label>
+      </div>
+
+      <button onclick="alert('Filters applied!')" style="width:100%;background:var(--gold);color:var(--black);border:none;padding:0.9rem;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;font-weight:600;cursor:pointer;font-family:'Montserrat',sans-serif;">Apply Filters</button>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="shop-main">
+      <div class="shop-toolbar">
+        <span class="results-count">Showing 1–12 of 85 timepieces</span>
+        <div style="display:flex;gap:1rem;align-items:center">
+          <div class="view-toggle">
+            <button class="view-btn active" onclick="setView('grid',this)">⊞</button>
+            <button class="view-btn" onclick="setView('list',this)">☰</button>
+          </div>
+          <select class="sort-select">
+            <option>Featured</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Newest First</option>
+            <option>Best Selling</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="active-filters">
+        <div class="filter-tag">All Series <span onclick="this.parentElement.remove()">✕</span></div>
+        <div class="filter-tag">All Prices <span onclick="this.parentElement.remove()">✕</span></div>
+      </div>
+
+      <div class="products-grid" id="productsGrid">
+        <!-- 12 Product Cards -->
+        <div class="product-card" onclick="location.href='product.html'">
+          <span class="product-badge new">New</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation()">♡</button>
+          <div class="product-card-img" style="background:radial-gradient(circle,#2a1f0a,#0a0a0a)">
+            <div class="watch-face"><span class="watch-label">AURUM</span></div>
+          </div>
+          <div class="product-info">
+            <p class="product-series">Prestige Series</p>
+            <h3 class="product-name">Chronograph Noir</h3>
+            <div class="product-footer">
+              <div class="product-price">₹2,45,000</div>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('Chronograph Noir','₹2,45,000')">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" onclick="location.href='product.html'">
+          <button class="wishlist-btn" onclick="event.stopPropagation()">♡</button>
+          <div class="product-card-img" style="background:radial-gradient(circle,#0a1520,#050d17)">
+            <div class="watch-face" style="border-color:rgba(100,180,255,0.35)"><span class="watch-label" style="color:#64b4ff">AURUM</span></div>
+          </div>
+          <div class="product-info">
+            <p class="product-series">Oceanic Series</p>
+            <h3 class="product-name">Azur Diver Pro</h3>
+            <div class="product-footer">
+              <div class="product-price">₹1,85,000</div>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('Azur Diver Pro','₹1,85,000')">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" onclick="location.href='product.html'">
+          <span class="product-badge sale">Sale</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation()">♡</button>
+          <div class="product-card-img" style="background:radial-gradient(circle,#1a0a0a,#0d0505)">
+            <div class="watch-face" style="border-color:rgba(255,100,100,0.35)"><span class="watch-label" style="color:#ff6464">AURUM</span></div>
+          </div>
+          <div class="product-info">
+            <p class="product-series">Rouge Series</p>
+            <h3 class="product-name">Carmine Tourbillon</h3>
+            <div class="product-footer">
+              <div class="product-price"><span class="original">₹5,20,000</span>₹4,50,000</div>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('Carmine Tourbillon','₹4,50,000')">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" onclick="location.href='product.html'">
+          <button class="wishlist-btn" onclick="event.stopPropagation()">♡</button>
+          <div class="product-card-img" style="background:radial-gradient(circle,#0a0a12,#070710)">
+            <div class="watch-face" style="border-color:rgba(150,130,255,0.35)"><span class="watch-label" style="color:#9682ff">AURUM</span></div>
+          </div>
+          <div class="product-info">
+            <p class="product-series">Celestial Series</p>
+            <h3 class="product-name">Midnight Perpetual</h3>
+            <div class="product-footer">
+              <div class="product-price">₹3,75,000</div>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('Midnight Perpetual','₹3,75,000')">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" onclick="location.href='product.html'">
+          <span class="product-badge new">New</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation()">♡</button>
+          <div class="product-card-img" style="background:radial-gradient(circle,#0a1a10,#050d08)">
+            <div class="watch-face" style="border-color:rgba(100,200,130,0.35)"><span class="watch-label" style="color:#64c882">AURUM</span></div>
+          </div>
+          <div class="product-info">
+            <p class="product-series">Verdant Series</p>
+            <h3 class="product-name">Malachite GMT</h3>
+            <div class="product-footer">
+              <div class="product-price">₹2,10,000</div>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('Malachite GMT','₹2,10,000')">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" onclick="location.href='product.html'">
+          <button class="wishlist-btn" onclick="event.stopPropagation()">♡</button>
+          <div class="product-card-img" style="background:radial-gradient(circle,#1a1a0a,#0d0d05)">
+            <div class="watch-face" style="border-color:rgba(201,168,76,0.6)"><span class="watch-label">AURUM</span></div>
+          </div>
+          <div class="product-info">
+            <p class="product-series">Gold Series</p>
+            <h3 class="product-name">Grand Complication</h3>
+            <div class="product-footer">
+              <div class="product-price">₹8,90,000</div>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('Grand Complication','₹8,90,000')">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" onclick="location.href='product.html'">
+          <button class="wishlist-btn" onclick="event.stopPropagation()">♡</button>
+          <div class="product-card-img" style="background:radial-gradient(circle,#15100a,#0a0805)">
+            <div class="watch-face" style="border-color:rgba(201,168,76,0.25)"><span class="watch-label">AURUM</span></div>
+          </div>
+          <div class="product-info">
+            <p class="product-series">Prestige Series</p>
+            <h3 class="product-name">Heritage Classic</h3>
+            <div class="product-footer">
+              <div class="product-price">₹1,65,000</div>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('Heritage Classic','₹1,65,000')">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" onclick="location.href='product.html'">
+          <span class="product-badge new">Limited</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation()">♡</button>
+          <div class="product-card-img" style="background:radial-gradient(circle,#0a1215,#050c10)">
+            <div class="watch-face" style="border-color:rgba(64,196,255,0.35)"><span class="watch-label" style="color:#40c4ff">AURUM</span></div>
+          </div>
+          <div class="product-info">
+            <p class="product-series">Oceanic Series</p>
+            <h3 class="product-name">Deep Blue 500</h3>
+            <div class="product-footer">
+              <div class="product-price">₹2,95,000</div>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('Deep Blue 500','₹2,95,000')">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" onclick="location.href='product.html'">
+          <button class="wishlist-btn" onclick="event.stopPropagation()">♡</button>
+          <div class="product-card-img" style="background:radial-gradient(circle,#160a14,#0d0509)">
+            <div class="watch-face" style="border-color:rgba(255,150,200,0.35)"><span class="watch-label" style="color:#ff96c8">AURUM</span></div>
+          </div>
+          <div class="product-info">
+            <p class="product-series">Céleste Women</p>
+            <h3 class="product-name">Rose Pavé</h3>
+            <div class="product-footer">
+              <div class="product-price">₹3,20,000</div>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('Rose Pavé','₹3,20,000')">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" onclick="location.href='product.html'">
+          <button class="wishlist-btn" onclick="event.stopPropagation()">♡</button>
+          <div class="product-card-img" style="background:radial-gradient(circle,#101510,#080d08)">
+            <div class="watch-face" style="border-color:rgba(100,200,100,0.35)"><span class="watch-label" style="color:#64c864">AURUM</span></div>
+          </div>
+          <div class="product-info">
+            <p class="product-series">Verdant Series</p>
+            <h3 class="product-name">Forest Chronos</h3>
+            <div class="product-footer">
+              <div class="product-price">₹1,95,000</div>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('Forest Chronos','₹1,95,000')">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" onclick="location.href='product.html'">
+          <span class="product-badge sale">−15%</span>
+          <button class="wishlist-btn" onclick="event.stopPropagation()">♡</button>
+          <div class="product-card-img" style="background:radial-gradient(circle,#151010,#0a0808)">
+            <div class="watch-face" style="border-color:rgba(200,100,100,0.35)"><span class="watch-label" style="color:#c86464">AURUM</span></div>
+          </div>
+          <div class="product-info">
+            <p class="product-series">Prestige Series</p>
+            <h3 class="product-name">Burgundy Sapphire</h3>
+            <div class="product-footer">
+              <div class="product-price"><span class="original">₹3,10,000</span>₹2,63,000</div>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('Burgundy Sapphire','₹2,63,000')">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" onclick="location.href='product.html'">
+          <button class="wishlist-btn" onclick="event.stopPropagation()">♡</button>
+          <div class="product-card-img" style="background:radial-gradient(circle,#1a1810,#0d0c08)">
+            <div class="watch-face" style="border-color:rgba(201,168,76,0.5)"><span class="watch-label">AURUM</span></div>
+          </div>
+          <div class="product-info">
+            <p class="product-series">Gold Series</p>
+            <h3 class="product-name">Imperial Minute Repeater</h3>
+            <div class="product-footer">
+              <div class="product-price">₹12,50,000</div>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('Imperial Minute Repeater','₹12,50,000')">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination">
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">4</button>
+        <button class="page-btn" style="width:auto;padding:0 1rem">Next →</button>
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <p>© 2025 AURUM Timepieces — <a href="index.html">Home</a> · <a href="about.html">Heritage</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script>
+    function setView(type, btn) {
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const grid = document.getElementById('productsGrid');
+      if (type === 'list') grid.classList.add('list-view');
+      else grid.classList.remove('list-view');
+    }
+    function addToCart(name, price) {
+      let cart = JSON.parse(localStorage.getItem('aurumCart') || '[]');
+      cart.push({ name, price });
+      localStorage.setItem('aurumCart', JSON.stringify(cart));
+      document.getElementById('cartCount').textContent = cart.length;
+      alert(`${name} added to cart!`);
+    }
+    document.querySelectorAll('.page-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    const cart = JSON.parse(localStorage.getItem('aurumCart') || '[]');
+    document.getElementById('cartCount').textContent = cart.length;
+  </script>
+</body>
+</html>

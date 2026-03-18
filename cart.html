@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cart — AURUM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --gold:#c9a84c; --gold-light:#e8d08a; --black:#0a0a0a; --dark:#111111; --mid:#1e1e1e; --gray:#666; --light-gray:#aaa; --white:#f5f0e8; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--black); color:var(--white); font-family:'Montserrat',sans-serif; font-weight:300; }
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:1.5rem 4rem; background:rgba(10,10,10,0.98); border-bottom:1px solid rgba(201,168,76,0.2); }
+    .nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:600; letter-spacing:0.3em; color:var(--gold); text-decoration:none; }
+    .nav-links { display:flex; gap:2.5rem; list-style:none; }
+    .nav-links a { color:var(--white); text-decoration:none; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; transition:color 0.3s; }
+    .nav-links a:hover { color:var(--gold); }
+    .nav-actions { display:flex; gap:1.5rem; align-items:center; }
+    .nav-icon { color:var(--white); text-decoration:none; font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; transition:color 0.3s; cursor:pointer; }
+    .nav-icon:hover { color:var(--gold); }
+    .cart-badge { background:var(--gold); color:var(--black); font-size:0.6rem; font-weight:600; border-radius:50%; width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; margin-left:4px; }
+
+    .page-wrap { padding:8rem 8% 4rem; }
+    .page-header { margin-bottom:3rem; }
+    .breadcrumb { font-size:0.65rem; letter-spacing:0.15em; color:var(--gray); margin-bottom:1rem; }
+    .breadcrumb a { color:var(--gray); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--gold); }
+    h1 { font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:300; }
+
+    /* PROGRESS */
+    .cart-progress { display:flex; align-items:center; margin-bottom:3rem; }
+    .step { display:flex; align-items:center; gap:0.8rem; }
+    .step-num { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:600; }
+    .step.done .step-num { background:var(--gold); color:var(--black); }
+    .step.active .step-num { background:transparent; border:2px solid var(--gold); color:var(--gold); }
+    .step.pending .step-num { background:transparent; border:1px solid rgba(255,255,255,0.15); color:var(--gray); }
+    .step-label { font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; }
+    .step.done .step-label, .step.active .step-label { color:var(--white); }
+    .step.pending .step-label { color:var(--gray); }
+    .step-divider { flex:1; height:1px; background:rgba(255,255,255,0.1); margin:0 1rem; max-width:80px; }
+
+    .cart-layout { display:grid; grid-template-columns:1fr 380px; gap:3rem; align-items:start; }
+
+    /* CART ITEMS */
+    .cart-items { }
+    .cart-item {
+      display:grid; grid-template-columns:100px 1fr auto;
+      gap:1.5rem; padding:2rem 0;
+      border-bottom:1px solid rgba(201,168,76,0.08);
+      align-items:center;
+    }
+    .item-img {
+      width:100px; height:100px;
+      background:var(--dark);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .item-watch { width:60px; height:60px; border-radius:50%; border:2px solid rgba(201,168,76,0.3); }
+    .item-details {}
+    .item-series { font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:0.3rem; }
+    .item-name { font-family:'Cormorant Garamond',serif; font-size:1.3rem; margin-bottom:0.3rem; }
+    .item-meta { font-size:0.7rem; color:var(--gray); margin-bottom:0.8rem; }
+    .qty-control { display:flex; align-items:center; gap:0; }
+    .qty-btn { width:32px; height:32px; background:var(--mid); border:1px solid rgba(201,168,76,0.15); color:var(--white); cursor:pointer; font-size:1rem; font-family:'Montserrat',sans-serif; transition:all 0.2s; }
+    .qty-btn:hover { background:var(--gold); color:var(--black); border-color:var(--gold); }
+    .qty-val { width:48px; height:32px; background:var(--dark); border:1px solid rgba(201,168,76,0.15); border-left:none; border-right:none; text-align:center; color:var(--white); font-size:0.8rem; font-family:'Montserrat',sans-serif; outline:none; }
+    .item-right { text-align:right; }
+    .item-price { font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--gold); margin-bottom:0.8rem; }
+    .remove-btn { background:transparent; border:none; color:var(--gray); font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; font-family:'Montserrat',sans-serif; transition:color 0.2s; }
+    .remove-btn:hover { color:#e05555; }
+
+    .empty-cart { text-align:center; padding:4rem; }
+    .empty-cart h2 { font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--gold); margin-bottom:1rem; }
+    .empty-cart p { font-size:0.8rem; color:var(--light-gray); margin-bottom:2rem; }
+
+    /* COUPON */
+    .coupon-row { display:flex; gap:0; margin:2rem 0; }
+    .coupon-input { flex:1; background:var(--dark); border:1px solid rgba(201,168,76,0.2); border-right:none; padding:0.9rem 1rem; color:var(--white); font-size:0.75rem; font-family:'Montserrat',sans-serif; outline:none; }
+    .coupon-input::placeholder { color:var(--gray); }
+    .coupon-btn { background:transparent; border:1px solid rgba(201,168,76,0.3); color:var(--gold); padding:0 1.5rem; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; font-family:'Montserrat',sans-serif; transition:all 0.2s; }
+    .coupon-btn:hover { background:var(--gold); color:var(--black); }
+
+    .continue-link { display:flex; align-items:center; gap:0.5rem; font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--light-gray); text-decoration:none; transition:color 0.2s; }
+    .continue-link:hover { color:var(--gold); }
+
+    /* SUMMARY */
+    .cart-summary { background:var(--dark); padding:2rem; border:1px solid rgba(201,168,76,0.1); position:sticky; top:100px; }
+    .summary-title { font-family:'Cormorant Garamond',serif; font-size:1.5rem; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid rgba(201,168,76,0.1); }
+    .summary-row { display:flex; justify-content:space-between; margin-bottom:0.8rem; font-size:0.8rem; }
+    .summary-row .label { color:var(--light-gray); }
+    .summary-row .value { color:var(--white); }
+    .summary-divider { height:1px; background:rgba(201,168,76,0.1); margin:1rem 0; }
+    .summary-total { display:flex; justify-content:space-between; font-size:1rem; }
+    .summary-total .label { color:var(--white); font-weight:500; }
+    .summary-total .value { font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--gold); }
+    .checkout-btn {
+      width:100%; background:var(--gold); color:var(--black);
+      border:none; padding:1.2rem;
+      font-size:0.75rem; letter-spacing:0.25em;
+      text-transform:uppercase; font-weight:600;
+      cursor:pointer; font-family:'Montserrat',sans-serif;
+      transition:all 0.3s; margin-top:1.5rem;
+    }
+    .checkout-btn:hover { background:var(--gold-light); transform:translateY(-2px); box-shadow:0 8px 30px rgba(201,168,76,0.3); }
+    .secure-note { text-align:center; font-size:0.65rem; color:var(--gray); margin-top:1rem; display:flex; align-items:center; justify-content:center; gap:0.5rem; }
+    .payment-icons { display:flex; gap:0.5rem; margin-top:1.2rem; justify-content:center; }
+    .pay-icon { padding:0.3rem 0.6rem; background:var(--mid); border:1px solid rgba(255,255,255,0.08); font-size:0.6rem; color:var(--light-gray); border-radius:2px; }
+    .promo-applied { background:rgba(100,200,130,0.1); border:1px solid rgba(100,200,130,0.3); padding:0.8rem; font-size:0.7rem; color:#64c882; display:none; margin-top:0.5rem; }
+
+    footer { background:var(--dark); padding:2rem 8%; text-align:center; border-top:1px solid rgba(201,168,76,0.1); margin-top:4rem; }
+    footer p { font-size:0.7rem; color:var(--gray); }
+    footer a { color:var(--gold); text-decoration:none; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">AURUM</a>
+    <ul class="nav-links">
+      <li><a href="shop.html">Collection</a></li>
+      <li><a href="shop.html">Men</a></li>
+      <li><a href="shop.html">Women</a></li>
+      <li><a href="about.html">Heritage</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span class="nav-icon">Search</span>
+      <a href="cart.html" class="nav-icon">Cart <span class="cart-badge" id="cartCount">0</span></a>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <p class="breadcrumb"><a href="index.html">Home</a> / Shopping Cart</p>
+      <h1>Your Cart</h1>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="cart-progress">
+      <div class="step active">
+        <div class="step-num">1</div>
+        <div class="step-label">Cart</div>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step pending">
+        <div class="step-num">2</div>
+        <div class="step-label">Shipping</div>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step pending">
+        <div class="step-num">3</div>
+        <div class="step-label">Payment</div>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step pending">
+        <div class="step-num">4</div>
+        <div class="step-label">Confirmation</div>
+      </div>
+    </div>
+
+    <div class="cart-layout">
+      <!-- ITEMS -->
+      <div>
+        <div id="cartItemsContainer">
+          <!-- dynamically rendered -->
+        </div>
+
+        <!-- COUPON -->
+        <div class="coupon-row">
+          <input type="text" class="coupon-input" placeholder="Enter promo code (try AURUM10)" id="couponInput">
+          <button class="coupon-btn" onclick="applyCoupon()">Apply</button>
+        </div>
+        <div class="promo-applied" id="promoMsg">✓ Promo code applied — 10% discount!</div>
+
+        <a href="shop.html" class="continue-link">← Continue Shopping</a>
+      </div>
+
+      <!-- SUMMARY -->
+      <div class="cart-summary">
+        <h2 class="summary-title">Order Summary</h2>
+        <div class="summary-row"><span class="label">Subtotal</span><span class="value" id="summarySubtotal">₹0</span></div>
+        <div class="summary-row"><span class="label">Discount</span><span class="value" id="summaryDiscount" style="color:#64c882">₹0</span></div>
+        <div class="summary-row"><span class="label">Shipping</span><span class="value" style="color:#64c882">Free</span></div>
+        <div class="summary-row"><span class="label">Insurance</span><span class="value">Included</span></div>
+        <div class="summary-divider"></div>
+        <div class="summary-total"><span class="label">Total</span><span class="value" id="summaryTotal">₹0</span></div>
+        <button class="checkout-btn" onclick="checkout()">Proceed to Checkout →</button>
+        <p class="secure-note">🔒 Secured by 256-bit SSL encryption</p>
+        <div class="payment-icons">
+          <div class="pay-icon">VISA</div>
+          <div class="pay-icon">MC</div>
+          <div class="pay-icon">UPI</div>
+          <div class="pay-icon">EMI</div>
+          <div class="pay-icon">NET</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 AURUM Timepieces — <a href="index.html">Home</a> · <a href="shop.html">Collection</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script>
+    const watchColors = [
+      'radial-gradient(circle,#2a1f0a,#0a0a0a)',
+      'radial-gradient(circle,#0a1520,#050d17)',
+      'radial-gradient(circle,#1a0a0a,#0d0505)',
+      'radial-gradient(circle,#0a0a12,#070710)',
+      'radial-gradient(circle,#0a1a10,#050d08)',
+      'radial-gradient(circle,#1a1a0a,#0d0d05)',
+    ];
+    const watchBorders = [
+      'rgba(201,168,76,0.4)', 'rgba(100,180,255,0.4)',
+      'rgba(255,100,100,0.4)', 'rgba(150,130,255,0.4)',
+      'rgba(100,200,130,0.4)', 'rgba(201,168,76,0.6)',
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('aurumCart') || '[]');
+    let discountApplied = false;
+
+    function parsePrice(p) {
+      return parseInt(p.replace(/[₹,]/g,'')) || 0;
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItemsContainer');
+      document.getElementById('cartCount').textContent = cart.length;
+
+      if (cart.length === 0) {
+        container.innerHTML = `<div class="empty-cart">
+          <h2>Your cart is empty</h2>
+          <p>Discover our exceptional collection of timepieces</p>
+          <a href="shop.html" style="display:inline-block;background:var(--gold);color:var(--black);padding:1rem 2.5rem;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;font-weight:600;text-decoration:none;">Explore Collection</a>
+        </div>`;
+        updateSummary();
+        return;
+      }
+
+      // Group by name
+      const grouped = {};
+      cart.forEach(item => {
+        if (!grouped[item.name]) grouped[item.name] = { ...item, qty: 0 };
+        grouped[item.name].qty++;
+      });
+
+      container.innerHTML = Object.values(grouped).map((item, i) => `
+        <div class="cart-item" data-name="${item.name}">
+          <div class="item-img">
+            <div class="item-watch" style="background:${watchColors[i%6]};border-color:${watchBorders[i%6]}"></div>
+          </div>
+          <div class="item-details">
+            <p class="item-series">Prestige Series</p>
+            <h3 class="item-name">${item.name}</h3>
+            <p class="item-meta">Calfskin Strap · Noir Black</p>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="changeQty('${item.name}',-1)">−</button>
+              <input type="text" class="qty-val" value="${item.qty}" readonly>
+              <button class="qty-btn" onclick="changeQty('${item.name}',1)">+</button>
+            </div>
+          </div>
+          <div class="item-right">
+            <div class="item-price">₹${(parsePrice(item.price)*item.qty).toLocaleString('en-IN')}</div>
+            <button class="remove-btn" onclick="removeItem('${item.name}')">✕ Remove</button>
+          </div>
+        </div>
+      `).join('');
+
+      updateSummary();
+    }
+
+    function changeQty(name, delta) {
+      if (delta === 1) {
+        const item = cart.find(c => c.name === name);
+        if (item) cart.push({ ...item });
+      } else {
+        const idx = cart.findIndex(c => c.name === name);
+        if (idx > -1) {
+          cart.splice(idx, 1);
+        }
+      }
+      localStorage.setItem('aurumCart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    function removeItem(name) {
+      cart = cart.filter(c => c.name !== name);
+      localStorage.setItem('aurumCart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    function updateSummary() {
+      const total = cart.reduce((sum, item) => sum + parsePrice(item.price), 0);
+      const discount = discountApplied ? Math.round(total * 0.1) : 0;
+      const final = total - discount;
+      document.getElementById('summarySubtotal').textContent = '₹' + total.toLocaleString('en-IN');
+      document.getElementById('summaryDiscount').textContent = discount ? '−₹' + discount.toLocaleString('en-IN') : '₹0';
+      document.getElementById('summaryTotal').textContent = '₹' + final.toLocaleString('en-IN');
+    }
+
+    function applyCoupon() {
+      const code = document.getElementById('couponInput').value.trim().toUpperCase();
+      if (code === 'AURUM10') {
+        discountApplied = true;
+        document.getElementById('promoMsg').style.display = 'block';
+        updateSummary();
+      } else {
+        alert('Invalid promo code. Try AURUM10');
+      }
+    }
+
+    function checkout() {
+      if (cart.length === 0) { alert('Your cart is empty!'); return; }
+      alert('Proceeding to checkout!\n\nThank you for choosing AURUM.\nIn a full implementation, this would take you to the payment page.');
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>

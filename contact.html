@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact — AURUM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --gold:#c9a84c; --gold-light:#e8d08a; --black:#0a0a0a; --dark:#111111; --mid:#1e1e1e; --gray:#666; --light-gray:#aaa; --white:#f5f0e8; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--black); color:var(--white); font-family:'Montserrat',sans-serif; font-weight:300; }
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:1.5rem 4rem; background:rgba(10,10,10,0.98); border-bottom:1px solid rgba(201,168,76,0.2); }
+    .nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:600; letter-spacing:0.3em; color:var(--gold); text-decoration:none; }
+    .nav-links { display:flex; gap:2.5rem; list-style:none; }
+    .nav-links a { color:var(--white); text-decoration:none; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; transition:color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color:var(--gold); }
+    .nav-actions { display:flex; gap:1.5rem; align-items:center; }
+    .nav-icon { color:var(--white); text-decoration:none; font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; transition:color 0.3s; }
+    .nav-icon:hover { color:var(--gold); }
+    .cart-badge { background:var(--gold); color:var(--black); font-size:0.6rem; font-weight:600; border-radius:50%; width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; margin-left:4px; }
+
+    /* HEADER */
+    .page-header {
+      padding:8rem 8% 4rem;
+      background:linear-gradient(to bottom, #111, var(--black));
+      border-bottom:1px solid rgba(201,168,76,0.1);
+    }
+    .eyebrow { font-size:0.65rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; display:flex; align-items:center; gap:1rem; }
+    .eyebrow::before { content:''; display:block; width:40px; height:1px; background:var(--gold); }
+    h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(2.5rem,4vw,4rem); font-weight:300; line-height:1.05; }
+    h1 em { font-style:italic; color:var(--gold); }
+
+    /* CONTACT LAYOUT */
+    .contact-layout {
+      display:grid; grid-template-columns:1fr 1.3fr;
+      gap:0; min-height:80vh;
+    }
+
+    /* LEFT INFO */
+    .contact-info {
+      background:var(--dark); padding:4rem;
+      border-right:1px solid rgba(201,168,76,0.1);
+    }
+    .contact-info-title { font-family:'Cormorant Garamond',serif; font-size:1.8rem; margin-bottom:1rem; }
+    .contact-info p { font-size:0.78rem; line-height:2; color:var(--light-gray); margin-bottom:2.5rem; }
+    .info-block { margin-bottom:2.5rem; }
+    .info-label { font-size:0.6rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:0.8rem; }
+    .info-value { font-size:0.8rem; line-height:1.9; color:var(--white); }
+    .info-value a { color:var(--white); text-decoration:none; transition:color 0.2s; }
+    .info-value a:hover { color:var(--gold); }
+    .divider { height:1px; background:rgba(201,168,76,0.1); margin:2rem 0; }
+    .boutique-list { }
+    .boutique-item { padding:1.2rem 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .boutique-city { font-size:0.8rem; color:var(--white); margin-bottom:0.3rem; }
+    .boutique-addr { font-size:0.72rem; color:var(--gray); line-height:1.6; }
+    .boutique-hours { font-size:0.68rem; color:var(--light-gray); margin-top:0.3rem; }
+    .social-row { display:flex; gap:0.8rem; margin-top:2rem; }
+    .social-btn {
+      padding:0.6rem 1.2rem;
+      border:1px solid rgba(201,168,76,0.2);
+      background:transparent; color:var(--light-gray);
+      font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase;
+      cursor:pointer; font-family:'Montserrat',sans-serif; transition:all 0.2s;
+      text-decoration:none; display:inline-block;
+    }
+    .social-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+    /* CONTACT FORM */
+    .contact-form-wrap { padding:4rem; }
+    .form-title { font-family:'Cormorant Garamond',serif; font-size:1.8rem; margin-bottom:0.5rem; }
+    .form-subtitle { font-size:0.75rem; color:var(--light-gray); margin-bottom:2.5rem; line-height:1.8; }
+
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
+    .form-group { margin-bottom:1.5rem; }
+    .form-group.full { grid-column:span 2; }
+    .form-label { display:block; font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .form-input {
+      width:100%; background:var(--dark);
+      border:1px solid rgba(201,168,76,0.15);
+      padding:0.9rem 1rem; color:var(--white);
+      font-size:0.78rem; font-family:'Montserrat',sans-serif;
+      outline:none; transition:border-color 0.2s;
+    }
+    .form-input:focus { border-color:rgba(201,168,76,0.5); }
+    .form-input::placeholder { color:var(--gray); }
+    .form-textarea { min-height:140px; resize:vertical; }
+    .form-select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%23c9a84c'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 1rem center; cursor:pointer; }
+
+    .submit-btn {
+      width:100%; background:var(--gold); color:var(--black);
+      border:none; padding:1.2rem;
+      font-size:0.75rem; letter-spacing:0.25em;
+      text-transform:uppercase; font-weight:600;
+      cursor:pointer; font-family:'Montserrat',sans-serif;
+      transition:all 0.3s; margin-top:0.5rem;
+    }
+    .submit-btn:hover { background:var(--gold-light); transform:translateY(-2px); box-shadow:0 8px 30px rgba(201,168,76,0.3); }
+
+    .form-note { font-size:0.67rem; color:var(--gray); margin-top:1rem; line-height:1.6; }
+    .form-success {
+      display:none; background:rgba(100,200,130,0.1);
+      border:1px solid rgba(100,200,130,0.3);
+      padding:1.5rem; text-align:center; margin-top:1rem;
+    }
+    .form-success p { font-size:0.8rem; color:#64c882; }
+
+    /* FAQ */
+    .faq-section { padding:5rem 8%; background:var(--dark); }
+    .faq-section h2 { font-family:'Cormorant Garamond',serif; font-size:2.5rem; font-weight:300; margin-bottom:2.5rem; }
+    .faq-item { border-bottom:1px solid rgba(201,168,76,0.08); }
+    .faq-q {
+      width:100%; background:transparent; border:none;
+      padding:1.5rem 0; text-align:left;
+      display:flex; justify-content:space-between; align-items:center;
+      cursor:pointer; font-family:'Montserrat',sans-serif;
+    }
+    .faq-q-text { font-size:0.85rem; color:var(--white); }
+    .faq-icon { font-size:1.2rem; color:var(--gold); transition:transform 0.3s; }
+    .faq-item.open .faq-icon { transform:rotate(45deg); }
+    .faq-a { display:none; padding:0 0 1.5rem; font-size:0.78rem; line-height:1.9; color:var(--light-gray); }
+    .faq-item.open .faq-a { display:block; }
+
+    footer { background:var(--dark); padding:2rem 8%; text-align:center; border-top:1px solid rgba(201,168,76,0.1); }
+    footer p { font-size:0.7rem; color:var(--gray); }
+    footer a { color:var(--gold); text-decoration:none; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">AURUM</a>
+    <ul class="nav-links">
+      <li><a href="shop.html">Collection</a></li>
+      <li><a href="shop.html">Men</a></li>
+      <li><a href="shop.html">Women</a></li>
+      <li><a href="about.html">Heritage</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span class="nav-icon">Search</span>
+      <a href="cart.html" class="nav-icon">Cart <span class="cart-badge" id="cartCount">0</span></a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="eyebrow">We're Here For You</div>
+    <h1>Contact <em>AURUM</em></h1>
+  </div>
+
+  <div class="contact-layout">
+    <!-- LEFT -->
+    <div class="contact-info">
+      <h2 class="contact-info-title">Get in Touch</h2>
+      <p>Our client advisors are dedicated to providing exceptional service. Whether you have a question about a timepiece, need servicing, or wish to arrange a private consultation — we are at your disposal.</p>
+
+      <div class="info-block">
+        <p class="info-label">Headquarters</p>
+        <div class="info-value">12 Rue du Mont-Blanc<br>1201 Geneva, Switzerland</div>
+      </div>
+      <div class="info-block">
+        <p class="info-label">Client Services</p>
+        <div class="info-value">
+          <a href="tel:+41229001892">+41 22 900 1892</a><br>
+          <a href="mailto:clients@aurum.com">clients@aurum.com</a>
+        </div>
+      </div>
+      <div class="info-block">
+        <p class="info-label">India Office (Bengaluru)</p>
+        <div class="info-value">
+          <a href="tel:+918022001892">+91 80 2200 1892</a><br>
+          <a href="mailto:india@aurum.com">india@aurum.com</a>
+        </div>
+      </div>
+      <div class="info-block">
+        <p class="info-label">Hours</p>
+        <div class="info-value">Monday – Friday: 9:00 – 18:00 CET<br>Saturday: 10:00 – 16:00 CET</div>
+      </div>
+
+      <div class="divider"></div>
+      <p class="info-label">Our Boutiques</p>
+      <div class="boutique-list">
+        <div class="boutique-item">
+          <div class="boutique-city">Geneva — Flagship</div>
+          <div class="boutique-addr">12 Rue du Mont-Blanc, 1201 Geneva</div>
+          <div class="boutique-hours">Mon–Sat 10:00–19:00</div>
+        </div>
+        <div class="boutique-item">
+          <div class="boutique-city">Paris</div>
+          <div class="boutique-addr">8 Place Vendôme, 75001 Paris</div>
+          <div class="boutique-hours">Mon–Sat 10:00–19:00</div>
+        </div>
+        <div class="boutique-item">
+          <div class="boutique-city">Dubai</div>
+          <div class="boutique-addr">Level 1, Dubai Mall, Downtown</div>
+          <div class="boutique-hours">Daily 10:00–22:00</div>
+        </div>
+        <div class="boutique-item">
+          <div class="boutique-city">Mumbai</div>
+          <div class="boutique-addr">The Taj Mahal Palace, Apollo Bunder</div>
+          <div class="boutique-hours">Mon–Sat 11:00–20:00</div>
+        </div>
+      </div>
+
+      <div class="social-row">
+        <a href="#" class="social-btn">Instagram</a>
+        <a href="#" class="social-btn">LinkedIn</a>
+        <a href="#" class="social-btn">Facebook</a>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="contact-form-wrap">
+      <h2 class="form-title">Send Us a Message</h2>
+      <p class="form-subtitle">Fill out the form below and a dedicated client advisor will respond within 24 hours.</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name *</label>
+          <input type="text" class="form-input" placeholder="Arjun" id="fname">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name *</label>
+          <input type="text" class="form-input" placeholder="Mehta" id="lname">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address *</label>
+          <input type="email" class="form-input" placeholder="arjun@email.com" id="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" placeholder="+91 98765 43210" id="phone">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Enquiry Type *</label>
+          <select class="form-input form-select" id="enquiry">
+            <option value="">Select an option...</option>
+            <option>Product Enquiry</option>
+            <option>Order Support</option>
+            <option>Watch Servicing</option>
+            <option>Bespoke Commission</option>
+            <option>Private Appointment</option>
+            <option>Returns & Exchanges</option>
+            <option>Authentication</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Watch Reference (Optional)</label>
+          <input type="text" class="form-input" placeholder="e.g. Chronograph Noir / AU-5150" id="watchref">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Your Message *</label>
+          <textarea class="form-input form-textarea" placeholder="Please describe how we can assist you..." id="message"></textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1.5rem">
+        <input type="checkbox" id="newsletter2" style="accent-color:var(--gold);width:16px;height:16px">
+        <label for="newsletter2" style="font-size:0.72rem;color:var(--light-gray);cursor:pointer">Subscribe to our newsletter for new releases and exclusive offers</label>
+      </div>
+
+      <button class="submit-btn" onclick="submitForm()">Send Message →</button>
+      <p class="form-note">* Required fields. Your data is processed in accordance with our Privacy Policy and will never be shared with third parties.</p>
+      <div class="form-success" id="successMsg">
+        <p>✓ Your message has been received. A client advisor will contact you within 24 hours.<br>Thank you for your interest in AURUM.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <p style="font-size:0.65rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">Quick Answers</p>
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">Do you offer international shipping?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Yes. AURUM ships to over 85 countries worldwide. All international shipments are fully insured, handled by our dedicated logistics partner, and delivered in our signature presentation packaging. Customs duties, where applicable, are borne by the recipient.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">What is your return policy?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">We offer a 30-day return window on all unworn timepieces in original condition with their complete documentation. Bespoke or engraved pieces are non-returnable. To initiate a return, please contact our client services team who will arrange complimentary collection.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">What does the AURUM warranty cover?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Every AURUM timepiece comes with a 5-year international warranty covering all manufacturing defects and mechanical failures under normal use. The warranty does not cover physical damage, water damage beyond the stated rating, or wear to strap and crystal.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">Can I arrange a private consultation before purchasing?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Absolutely. We encourage private consultations at any of our boutiques, or via video call with our client advisors. For special commission requests, we can arrange a visit to our Geneva manufacture to witness the craftsmanship firsthand.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">Do you offer servicing for older AURUM watches?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Yes. Our service centre in Geneva handles all AURUM timepieces regardless of age. Older references may require the fabrication of parts — our archivists maintain records of every calibre produced since 1892. Full servicing typically takes 6–8 weeks.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">Are EMI options available in India?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Yes. We offer 0% EMI for up to 12 months through select credit cards and 6–24 month EMI options through our banking partners including HDFC, ICICI, Axis, and SBI. Details are available at checkout.</div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 AURUM Timepieces — <a href="index.html">Home</a> · <a href="shop.html">Collection</a> · <a href="about.html">Heritage</a></p>
+  </footer>
+
+  <script>
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      item.classList.toggle('open');
+    }
+    function submitForm() {
+      const required = ['fname','lname','email','enquiry','message'];
+      for (const id of required) {
+        if (!document.getElementById(id).value.trim()) {
+          alert('Please fill in all required fields.');
+          document.getElementById(id).focus();
+          return;
+        }
+      }
+      document.querySelector('.submit-btn').textContent = 'Sending...';
+      setTimeout(() => {
+        document.querySelector('.submit-btn').style.display = 'none';
+        document.getElementById('successMsg').style.display = 'block';
+        // Clear form
+        ['fname','lname','email','phone','enquiry','watchref','message'].forEach(id => {
+          document.getElementById(id).value = '';
+        });
+      }, 1200);
+    }
+    const cart = JSON.parse(localStorage.getItem('aurumCart') || '[]');
+    document.getElementById('cartCount').textContent = cart.length;
+  </script>
+</body>
+</html>

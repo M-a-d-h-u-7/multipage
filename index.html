@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Heritage — AURUM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --gold:#c9a84c; --gold-light:#e8d08a; --black:#0a0a0a; --dark:#111111; --mid:#1e1e1e; --gray:#666; --light-gray:#aaa; --white:#f5f0e8; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--black); color:var(--white); font-family:'Montserrat',sans-serif; font-weight:300; overflow-x:hidden; }
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:1.5rem 4rem; background:rgba(10,10,10,0.98); border-bottom:1px solid rgba(201,168,76,0.2); }
+    .nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:600; letter-spacing:0.3em; color:var(--gold); text-decoration:none; }
+    .nav-links { display:flex; gap:2.5rem; list-style:none; }
+    .nav-links a { color:var(--white); text-decoration:none; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; transition:color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color:var(--gold); }
+    .nav-actions { display:flex; gap:1.5rem; align-items:center; }
+    .nav-icon { color:var(--white); text-decoration:none; font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; transition:color 0.3s; }
+    .nav-icon:hover { color:var(--gold); }
+    .cart-badge { background:var(--gold); color:var(--black); font-size:0.6rem; font-weight:600; border-radius:50%; width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; margin-left:4px; }
+
+    /* HERO */
+    .about-hero {
+      height:70vh; display:flex; align-items:center;
+      position:relative; overflow:hidden;
+      background:linear-gradient(135deg, #141008 0%, #0a0a0a 60%);
+    }
+    .about-hero::before {
+      content:''; position:absolute; inset:0;
+      background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23c9a84c' fill-opacity='0.04'%3E%3Cpath d='M0 0h40v40H0V0zm40 40h40v40H40V40zm0-40h2l-2 2V0zm0 4l4-4h2l-6 6V4zm0 4l8-8h2L40 10V8zm0 4L52 0h2L40 14v-2zm0 4L56 0h2L40 18v-2zm0 4L60 0h2L40 22v-2zm0 4L64 0h2L40 26v-2zm0 4L68 0h2L40 30v-2zm0 4L72 0h2L40 34v-2zm0 4L76 0h2L40 38v-2zm0 4L80 0v2L42 40h-2zm4 0L80 4v2L46 40h-2zm4 0L80 8v2L50 40h-2zm4 0L80 12v2L54 40h-2zm4 0L80 16v2L58 40h-2zm4 0L80 20v2L62 40h-2zm4 0L80 24v2L66 40h-2zm4 0L80 28v2L70 40h-2zm4 0L80 32v2L74 40h-2zm4 0L80 36v2L78 40h-2zm4 0L80 40h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .about-hero-deco {
+      position:absolute; right:10%; top:50%;
+      transform:translateY(-50%);
+      width:300px; height:300px;
+    }
+    .deco-ring {
+      position:absolute; border-radius:50%;
+      border:1px solid rgba(201,168,76,0.1);
+    }
+    .deco-ring:nth-child(1) { inset:0; }
+    .deco-ring:nth-child(2) { inset:30px; border-color:rgba(201,168,76,0.07); }
+    .deco-ring:nth-child(3) { inset:60px; border-color:rgba(201,168,76,0.05); }
+    .about-hero-content { position:relative; z-index:2; padding:0 8%; padding-top:5rem; }
+    .eyebrow { font-size:0.65rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold); margin-bottom:1.5rem; display:flex; align-items:center; gap:1rem; }
+    .eyebrow::before { content:''; display:block; width:40px; height:1px; background:var(--gold); }
+    h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(3rem,5vw,5rem); font-weight:300; line-height:1.05; }
+    h1 em { font-style:italic; color:var(--gold); }
+
+    /* TIMELINE */
+    .timeline-section { padding:6rem 8%; }
+    .section-label { font-size:0.65rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold); margin-bottom:0.8rem; }
+    .section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,3.5vw,3rem); font-weight:300; margin-bottom:3rem; line-height:1.1; }
+    .timeline { position:relative; padding-left:60px; }
+    .timeline::before { content:''; position:absolute; left:20px; top:0; bottom:0; width:1px; background:linear-gradient(to bottom, transparent, rgba(201,168,76,0.4), transparent); }
+    .timeline-item { position:relative; margin-bottom:3.5rem; }
+    .timeline-item::before { content:''; position:absolute; left:-48px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--gold); box-shadow:0 0 15px rgba(201,168,76,0.4); }
+    .timeline-year { font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--gold); margin-bottom:0.5rem; }
+    .timeline-title { font-family:'Cormorant Garamond',serif; font-size:1.3rem; margin-bottom:0.5rem; }
+    .timeline-text { font-size:0.78rem; line-height:1.9; color:var(--light-gray); max-width:600px; }
+
+    /* VALUES */
+    .values-section { background:var(--dark); padding:6rem 8%; }
+    .values-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:3rem; }
+    .value-card { background:var(--black); padding:3rem 2rem; border:1px solid rgba(201,168,76,0.05); transition:border-color 0.3s; }
+    .value-card:hover { border-color:rgba(201,168,76,0.2); }
+    .value-icon { font-size:2rem; margin-bottom:1.5rem; }
+    .value-title { font-family:'Cormorant Garamond',serif; font-size:1.4rem; margin-bottom:1rem; }
+    .value-text { font-size:0.78rem; line-height:1.9; color:var(--light-gray); }
+
+    /* ATELIER */
+    .atelier-section { padding:6rem 8%; display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:center; }
+    .atelier-visual {
+      aspect-ratio:4/5; background:linear-gradient(135deg,#1e1a0f,#0d0d0d);
+      display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;
+    }
+    .atelier-visual::after { content:''; position:absolute; inset:0; border:1px solid rgba(201,168,76,0.1); pointer-events:none; }
+    .gear-group { position:relative; }
+    .gear { display:inline-block; font-size:4rem; color:rgba(201,168,76,0.3); animation:spin 8s linear infinite; }
+    .gear.reverse { animation-direction:reverse; font-size:2.5rem; position:absolute; top:-10px; right:-40px; }
+    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    .atelier-text .section-title { margin-bottom:1.5rem; }
+    .atelier-text p { font-size:0.8rem; line-height:2; color:var(--light-gray); margin-bottom:1.2rem; }
+    .process-steps { margin-top:2.5rem; }
+    .process-step { display:flex; gap:1.5rem; align-items:flex-start; margin-bottom:1.5rem; }
+    .step-dot { width:8px; height:8px; background:var(--gold); border-radius:50%; flex-shrink:0; margin-top:5px; }
+    .step-content h4 { font-size:0.8rem; letter-spacing:0.1em; margin-bottom:0.3rem; }
+    .step-content p { font-size:0.75rem; color:var(--light-gray); line-height:1.7; }
+
+    /* TEAM */
+    .team-section { background:var(--dark); padding:6rem 8%; }
+    .team-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2rem; margin-top:3rem; }
+    .team-card { text-align:center; }
+    .team-avatar { width:100px; height:100px; border-radius:50%; background:var(--mid); margin:0 auto 1.2rem; border:2px solid rgba(201,168,76,0.2); display:flex; align-items:center; justify-content:center; font-size:2rem; }
+    .team-name { font-family:'Cormorant Garamond',serif; font-size:1.1rem; margin-bottom:0.3rem; }
+    .team-role { font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); }
+
+    /* AWARDS */
+    .awards-section { padding:5rem 8%; text-align:center; }
+    .awards-grid { display:flex; justify-content:center; gap:4rem; flex-wrap:wrap; margin-top:3rem; }
+    .award-item { text-align:center; }
+    .award-year { font-family:'Cormorant Garamond',serif; font-size:2.5rem; color:var(--gold); display:block; }
+    .award-name { font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--light-gray); }
+
+    /* CTA */
+    .cta-section { background:linear-gradient(135deg,#1a1208,#0a0a0a); padding:5rem 8%; text-align:center; border-top:1px solid rgba(201,168,76,0.15); }
+    .cta-section h2 { font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:300; margin-bottom:1rem; }
+    .cta-section p { font-size:0.8rem; color:var(--light-gray); margin-bottom:2.5rem; }
+    .btn-primary { display:inline-block; background:var(--gold); color:var(--black); padding:1rem 3rem; font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; font-weight:600; text-decoration:none; transition:all 0.3s; }
+    .btn-primary:hover { background:var(--gold-light); transform:translateY(-2px); box-shadow:0 8px 30px rgba(201,168,76,0.3); }
+
+    footer { background:var(--dark); padding:2rem 8%; text-align:center; border-top:1px solid rgba(201,168,76,0.1); }
+    footer p { font-size:0.7rem; color:var(--gray); }
+    footer a { color:var(--gold); text-decoration:none; }
+
+    .fade-in { opacity:0; transform:translateY(30px); transition:opacity 0.7s, transform 0.7s; }
+    .fade-in.visible { opacity:1; transform:none; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">AURUM</a>
+    <ul class="nav-links">
+      <li><a href="shop.html">Collection</a></li>
+      <li><a href="shop.html">Men</a></li>
+      <li><a href="shop.html">Women</a></li>
+      <li><a href="about.html" class="active">Heritage</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span class="nav-icon">Search</span>
+      <a href="cart.html" class="nav-icon">Cart <span class="cart-badge" id="cartCount">0</span></a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="about-hero">
+    <div class="about-hero-deco">
+      <div class="deco-ring"></div>
+      <div class="deco-ring"></div>
+      <div class="deco-ring"></div>
+    </div>
+    <div class="about-hero-content">
+      <div class="eyebrow">Our Story</div>
+      <h1>Crafting <em>Time</em><br>Since 1892</h1>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <section style="padding:5rem 8%;background:var(--dark)">
+    <div style="max-width:800px;margin:0 auto;text-align:center" class="fade-in">
+      <p class="section-label">Philosophy</p>
+      <h2 class="section-title">More Than a Watch.<br>A <em style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold)">Legacy</em>.</h2>
+      <p style="font-size:0.85rem;line-height:2.2;color:var(--light-gray)">AURUM was born from a simple belief: that a timepiece should outlast its owner — passed from hand to hand, generation to generation, carrying with it the weight of moments lived. We do not make watches for collectors alone. We make them for people who understand that how you spend your time defines who you are.</p>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="timeline-section">
+    <div class="fade-in">
+      <p class="section-label">Our History</p>
+      <h2 class="section-title">A Century of<br>Horological Excellence</h2>
+    </div>
+    <div class="timeline fade-in">
+      <div class="timeline-item">
+        <div class="timeline-year">1892</div>
+        <h3 class="timeline-title">The Founding</h3>
+        <p class="timeline-text">Édouard Aurum, a young watchmaker from Le Locle, Switzerland, establishes his atelier with a single ambition: to create watches of uncompromising quality that would endure for centuries. His first piece, the Calibre 1 pocket watch, takes six months to complete.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1924</div>
+        <h3 class="timeline-title">The First Wristwatch</h3>
+        <p class="timeline-text">AURUM introduces its first wristwatch, the Elégante, with an in-house movement featuring a barrel spring of unprecedented tension. The Elégante is worn by royalty across three continents.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1951</div>
+        <h3 class="timeline-title">The Chronograph Breakthrough</h3>
+        <p class="timeline-text">Master watchmaker Henri Aurum develops the AU-Chrono movement — a column-wheel chronograph mechanism with a lateral coupling that remains 35% more accurate than any contemporary design. It wins the Geneva Prize for Technical Innovation.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1978</div>
+        <h3 class="timeline-title">The Tourbillon Collection</h3>
+        <p class="timeline-text">AURUM presents its first tourbillon — a gravity-defying escapement housed in a hand-engraved rose gold case. Only 12 are made. All 12 sell within days of the announcement.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2003</div>
+        <h3 class="timeline-title">Global Expansion</h3>
+        <p class="timeline-text">The third generation of the Aurum family opens boutiques in Paris, New York, Hong Kong, and Dubai. AURUM becomes a truly global name while maintaining the intimacy of a family manufacture.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2025</div>
+        <h3 class="timeline-title">The New Collection</h3>
+        <p class="timeline-text">AURUM launches its most ambitious collection to date — 85 distinct references across six series, each featuring an updated in-house movement with silicon escapement and 96-hour power reserve.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="values-section">
+    <div class="fade-in">
+      <p class="section-label">Our Principles</p>
+      <h2 class="section-title">What We Stand For</h2>
+    </div>
+    <div class="values-grid fade-in">
+      <div class="value-card">
+        <div class="value-icon">⚙️</div>
+        <h3 class="value-title">Mechanical Mastery</h3>
+        <p class="value-text">Every movement is designed, developed, and assembled in-house at our Geneva manufacture. We employ 85 full-time watchmakers, each specialised in a single discipline — from regulating to engraving.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">💎</div>
+        <h3 class="value-title">Material Integrity</h3>
+        <p class="value-text">We source only the finest materials on earth. Sapphire crystals grown in our own facility. Cases machined from aerospace-grade steel. Dials decorated with genuine guilloché and grand feu enamel.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🕰️</div>
+        <h3 class="value-title">Enduring Design</h3>
+        <p class="value-text">We do not follow trends. An AURUM design must be equally beautiful in 1950 and 2050. Every proportion, every marker, every hand is refined over hundreds of prototype iterations before approval.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ATELIER -->
+  <section class="atelier-section">
+    <div class="atelier-visual">
+      <div class="gear-group">
+        <span class="gear">⚙</span>
+        <span class="gear reverse">⚙</span>
+      </div>
+    </div>
+    <div class="atelier-text fade-in">
+      <p class="section-label">The Atelier</p>
+      <h2 class="section-title">Where Every<br>Second is Born</h2>
+      <p>Our manufacture in Geneva spans 6,000 square metres across five floors. Within it, 380 distinct operations are performed to complete a single watch — from raw metal to finished timepiece.</p>
+      <p>Visitors to our atelier often remark on the silence. In an age of machines, our craftspeople work with hands guided by decades of muscle memory.</p>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-dot"></div>
+          <div class="step-content">
+            <h4>Movement Architecture</h4>
+            <p>Each calibre is designed by our in-house engineers using proprietary CAD software developed over 20 years.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-dot"></div>
+          <div class="step-content">
+            <h4>Component Fabrication</h4>
+            <p>Over 280 individual parts are machined in-house to tolerances of ±2 microns.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-dot"></div>
+          <div class="step-content">
+            <h4>Hand Assembly & Regulation</h4>
+            <p>Each movement is assembled by a single master watchmaker and regulated for 20 days across six positions.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-dot"></div>
+          <div class="step-content">
+            <h4>Final Quality Control</h4>
+            <p>216 individual quality checks. Water resistance tested to 150% of stated specification.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="team-section">
+    <div class="fade-in">
+      <p class="section-label">The People</p>
+      <h2 class="section-title">Master Craftspeople</h2>
+    </div>
+    <div class="team-grid fade-in">
+      <div class="team-card">
+        <div class="team-avatar">🕐</div>
+        <h3 class="team-name">Philippe Aurum</h3>
+        <p class="team-role">CEO & Master Watchmaker</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">⚙️</div>
+        <h3 class="team-name">Margaux Duval</h3>
+        <p class="team-role">Head of Movement Design</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">✏️</div>
+        <h3 class="team-name">Takashi Mori</h3>
+        <p class="team-role">Chief Dial Artisan</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">💡</div>
+        <h3 class="team-name">Sofia Bertrand</h3>
+        <p class="team-role">Creative Director</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- AWARDS -->
+  <section class="awards-section">
+    <p class="section-label">Recognition</p>
+    <h2 class="section-title">Awards & Accolades</h2>
+    <div class="awards-grid fade-in">
+      <div class="award-item"><span class="award-year">2024</span><span class="award-name">Watch of the Year<br>GPHG Grand Prix</span></div>
+      <div class="award-item"><span class="award-year">2022</span><span class="award-name">Best Chronograph<br>Revolution Awards</span></div>
+      <div class="award-item"><span class="award-year">2020</span><span class="award-name">Innovator of the Year<br>WatchPro Awards</span></div>
+      <div class="award-item"><span class="award-year">2018</span><span class="award-name">Heritage Brand<br>Salon QP London</span></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>Experience AURUM</h2>
+    <p>Discover our complete collection of handcrafted Swiss timepieces.</p>
+    <a href="shop.html" class="btn-primary">Explore the Collection</a>
+  </section>
+
+  <footer>
+    <p>© 2025 AURUM Timepieces — <a href="index.html">Home</a> · <a href="shop.html">Collection</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script>
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+    const cart = JSON.parse(localStorage.getItem('aurumCart') || '[]');
+    document.getElementById('cartCount').textContent = cart.length;
+  </script>
+</body>
+</html>
